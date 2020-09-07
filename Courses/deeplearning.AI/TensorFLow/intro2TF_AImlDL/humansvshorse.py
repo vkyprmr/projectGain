@@ -92,7 +92,7 @@ model.summary()
 #%%
 # Building Image Generator
 train_datagen = ImageDataGenerator(rescale=1/255)
-train_generator = train_datagen.flow_from_directory('Data/horses',
+train_generator = train_datagen.flow_from_directory('Data/Training/',
                                                     target_size=(300, 300),
                                                     batch_size=128,
                                                     class_mode='binary'
@@ -100,8 +100,8 @@ train_generator = train_datagen.flow_from_directory('Data/horses',
 
 #%%
 # Training
-history = model.fit_generator(train_generator,steps_per_epoch=8,
-                              epochs=15,verbose=1)
+history = model.fit_generator(train_generator, steps_per_epoch=8,
+                              epochs=15, verbose=1)
 
 #%%
 # Prediction
