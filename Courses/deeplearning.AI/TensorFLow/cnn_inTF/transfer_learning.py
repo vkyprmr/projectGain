@@ -1,6 +1,6 @@
 '''
 Developer: vkyprmr
-Filename: transfer_learningCVD.py
+Filename: transfer_learning.py
 Created on: 2020-09-07 at 23:21:51
 '''
 '''
@@ -64,12 +64,12 @@ x = layers.Dense(1024)(x)
 # Add a dropout rate of 0.2
 x = layers.Dropout(0.2)(x)                  
 # Add a final sigmoid layer for classification
-x = layers.Dense(1, activation='sigmoid')(x)           
+x = layers.Dense(1, activation='sigmoid')(x)        # For multiclass - Number of classes, activation='softmax'    
 
 model = Model(pre_trained_model.input, x) 
 
 model.compile(optimizer = RMSprop(lr=0.0001), 
-              loss = 'binary_crossentropy', 
+              loss = 'binary_crossentropy',     # For multiclass classification: categorical_crossentropy/sparse_categorical_crossentropy
               metrics = ['accuracy'])
 
 model.summary()
