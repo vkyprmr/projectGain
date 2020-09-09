@@ -5,7 +5,7 @@ Created on: 2020-09-04 at 21:26:57
 '''
 '''
 Modified by: vkyprmr
-Last modified on: 2020-09-04 at 21:26:59
+Last modified on: 2020-09-09 at 14:51:36
 '''
 
 #%%
@@ -13,11 +13,13 @@ Last modified on: 2020-09-04 at 21:26:59
 import numpy as np
 import matplotlib.pyplot as plt
 %matplotlib qt
+from datetime import datetime
 import tensorflow as tf
 from tensorflow.keras import models
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Flatten, Dense, Conv2D, MaxPooling2D
 from tensorflow.keras import datasets
+from tensorflow.keras.callbacks import TensorBoard
 
 #%%
 # Loading and Preparing data
@@ -55,6 +57,11 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 batch_size, width, height, channels = -1, 28, 28, 1
+
+log_dir = "logs\\fit\\" + datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = TensorBoard(log_dir, histogram_freq=1, profile_batch=0)
+
+callbacks = [callbacks, tensorboard_callback]
 
 model.fit(X_train.reshape(batch_size, width, height, channels), y_train, epochs=10, callbacks=[callbacks])
 

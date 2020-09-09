@@ -5,7 +5,7 @@ Created on: 2020-09-07 at 15:27:52
 '''
 '''
 Modified by: vkyprmr
-Last modified on: 2020-09-07 at 15:37:37
+Last modified on: 2020-09-09 at 14:51:06
 '''
 
 #%%
@@ -15,11 +15,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 %matplotlib qt
+from datetime import datetime
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.optimizers import RMSprop, Adam
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.preprocessing import image
+from tensorflow.keras.callbacks import TensorBoard
+
 
 #%%
 """ 
@@ -130,9 +133,14 @@ val_generator = val_datagen.flow_from_directory('Data/Validation/',
 
 #%%
 # Training
+log_dir = "logs\\fit\\" + datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = TensorBoard(log_dir, histogram_freq=1, profile_batch=0)
+
+callbacks =[tensorboard_callback]
+
 history = model.fit_generator(train_generator, steps_per_epoch=8,
                               validation_data=val_generator, validation_steps=8,
-                              epochs=15, verbose=1)
+                              epochs=15, verbose=1, callbacks=callbacks)
 
 #%%
 # Prediction

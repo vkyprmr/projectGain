@@ -5,7 +5,7 @@ Created on: 2020-09-04 at 19:59:45
 '''
 '''
 Modified by: vkyprmr
-Last modified on: 2020-09-04 at 20:37:09
+Last modified on: 2020-09-09 at 14:51:24
 '''
 
 #%%
@@ -13,10 +13,12 @@ Last modified on: 2020-09-04 at 20:37:09
 import numpy as np
 import matplotlib.pyplot as plt
 %matplotlib qt
+from datetime import datetime
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Flatten, Dense
 from tensorflow.keras import datasets
+from tensorflow.keras.callbacks import TensorBoard
 
 #%%
 # Loading and Preparing data
@@ -59,4 +61,10 @@ model = Sequential(
                     ]
                    )
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
+
+log_dir = "logs\\fit\\" + datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = TensorBoard(log_dir, histogram_freq=1, profile_batch=0)
+
+callbacks = [callbacks, tensorboard_callback]
+
 model.fit(training_images, training_labels, epochs=5, callbacks=[callbacks])

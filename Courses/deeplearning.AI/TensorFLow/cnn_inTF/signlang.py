@@ -5,12 +5,13 @@ Created on: 2020-09-08 at 15:26:01
 '''
 '''
 Modified by: vkyprmr
-Last modified on: 2020-09-08 at 15:26:02
+Last modified on: 2020-09-09 at 14:53:47
 '''
 
 #%%
 # Imports
 import os
+from datetime import datetime
 import pandas as pd
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
@@ -21,6 +22,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam, RMSprop
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.callbacks import TensorBoard
 
 %matplotlib qt
 
@@ -88,6 +90,12 @@ model.summary()
 
 #%%
 # Training
+
+log_dir = "logs\\fit\\" + datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = TensorBoard(log_dir, histogram_freq=1, profile_batch=0)
+
+callbacks = [tensorboard_callback]
+
 history = model.fit_generator(train_generator, steps_per_epoch=len(train_images)//32,
                               epochs=15, verbose=1, validation_data=validation_generator,
                               validation_steps=len(test_images)//32)

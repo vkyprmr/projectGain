@@ -1,11 +1,11 @@
 '''
 Developer: vkyprmr
-Filename: imdb_embeddings.py
-Created on: 2020-09-08 at 21:11:10
+Filename: imdb_embeddings_subwords.py
+Created on: 2020-09-08 at 23:16:37
 '''
 '''
 Modified by: vkyprmr
-Last modified on: 2020-09-08 at 23:14:48
+Last modified on: 2020-09-09 at 14:49:12
 '''
 
 #%%
@@ -13,12 +13,14 @@ Last modified on: 2020-09-08 at 23:14:48
 import io
 import numpy as np
 import tensorflow as tf
+from datetime import datetime
 import tensorflow_datasets as tfds
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Embedding, Flatten, GlobalAveragePooling1D
 from tensorflow.keras.optimizers import RMSprop, Adam
+from tensorflow.keras.callbacks import TensorBoard
 
 #%%
 # Set parameters
@@ -35,30 +37,11 @@ for physical_device in physical_devices:
 
 #%%
 # Loading data from TFDS
-imdb, info = tfds.load("imdb_reviews", with_info=True, as_supervised=True)
+imdb, info = tfds.load("imdb_reviews/subwords8k", with_info=True, as_supervised=True)   # 8k specifies vocab size
 
 #%%
 # Fetching data from the object
 train_data, test_data = imdb['train'], imdb['test']
-
-training_sentences = []
-training_labels = []
-
-testing_sentences = []
-testing_labels = []
-
-# str(s.tonumpy()) is needed in Python3 instead of just s.numpy()
-for s,l in train_data:
-  training_sentences.append(s.numpy().decode('utf8'))
-  training_labels.append(l.numpy())
-  
-for s,l in test_data:
-  testing_sentences.append(s.numpy().decode('utf8'))
-  testing_labels.append(l.numpy())
-  
-training_labels_final = np.array(training_labels)
-testing_labels_final = np.array(testing_labels)
-
 
 # %%
 # Tokenizing data
@@ -68,31 +51,34 @@ max_length = 120
 trunc_type='post'
 oov_tok = "<OOV>"
 
-tokenizer = Tokenizer(num_words = vocab_size, oov_token=oov_tok)
-tokenizer.fit_on_texts(training_sentences)
-word_index = tokenizer.word_index
-sequences = tokenizer.texts_to_sequences(training_sentences)
-padded = pad_sequences(sequences,maxlen=max_length, truncating=trunc_type)
+tokenizer = info.features['text'].encoder
+print(tokenizer.subwords)
 
-testing_sequences = tokenizer.texts_to_sequences(testing_sentences)
-testing_padded = pad_sequences(testing_sequences,maxlen=max_length)
+sample_string = 'TensorFlow, from basics to mastery'
+tokenized_string = tokenizer.encode(sample_string)
+print (f'Tokenized string is {tokenized_string}')
+original_string = tokenizer.decode(tokenized_string)
+print (f'The original string: {original_string}')
+for ts in tokenized_string:
+  print ('{} ----> {}'.format(ts, tokenizer.decode([ts])))
 
 #%%
-# Remapping words
-reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
+# Hyperparmeters
+BUFFER_SIZE = 10000
+BATCH_SIZE = 64
 
-def decode_review(text):
-    return ' '.join([reverse_word_index.get(i, '?') for i in text])
-
-print(decode_review(padded[3]))
-print(training_sentences[3])
+train_dataset = train_data.shuffle(BUFFER_SIZE)
+train_dataset = train_dataset.padded_batch(BATCH_SIZE, tf.compat.v1.data.get_output_shapes(train_dataset))
+test_dataset = test_data.padded_batch(BATCH_SIZE, tf.compat.v1.data.get_output_shapes(test_data))
 
 #%%
 # Building the model
+embedding_dim = 64
+
 model = Sequential(
                     [
                             Embedding(vocab_size, embedding_dim, input_length=max_length),
-                            Flatten(),          # Using subwords tokenizer will cause tf to crash if Flatten, so use GlobalAveragePooling1D
+                            GlobalAveragePooling1D(),          # Using subwords tokenizer will cause tf to crash if Flatten, so use GlobalAveragePooling1D
                             Dense(6, activation='relu'),
                             Dense(1, activation='sigmoid')
                     ]
@@ -103,7 +89,13 @@ model.summary()
 #%%
 # Training
 epochs = 10
-model.fit(padded, training_labels_final, epochs=epochs, validation_data=(testing_padded, testing_labels_final))
+
+log_dir = "logs\\fit\\" + datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = TensorBoard(log_dir, histogram_freq=1, profile_batch=0)
+
+callbacks = [tensorboard_callback]
+
+model.fit(train_dataset, epochs=epochs, validation_data=test_dataset)
 
 #%%
 # Saving the weights for visualization
@@ -114,7 +106,7 @@ print(weights.shape) # shape: (vocab_size, embedding_dim)
 out_v = io.open('vecs.tsv', 'w', encoding='utf-8')
 out_m = io.open('meta.tsv', 'w', encoding='utf-8')
 for word_num in range(1, vocab_size):
-  word = reverse_word_index[word_num]
+  word = tokenizer.decode([word_num])
   embeddings = weights[word_num]
   out_m.write(word + "\n")
   out_v.write('\t'.join([str(x) for x in embeddings]) + "\n")
@@ -122,8 +114,11 @@ out_v.close()
 out_m.close()
 
 #%%
-# Test
-sentence = "I really think this is amazing. honest."
-sequence = tokenizer.texts_to_sequences([sentence])
-print(sequence)
-
+# Colab
+try:
+  from google.colab import files
+except ImportError:
+  pass
+else:
+  files.download('vecs.tsv')
+  files.download('meta.tsv')

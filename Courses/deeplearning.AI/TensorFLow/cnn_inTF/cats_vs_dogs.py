@@ -5,12 +5,13 @@ Created on: 2020-09-07 at 17:19:59
 '''
 '''
 Modified by: vkyprmr
-Last modified on: 2020-09-07 at 17:20:00
+Last modified on: 2020-09-09 at 14:56:29
 '''
 
 #%%
 # Imports
 import os
+from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -21,6 +22,7 @@ from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.optimizers import RMSprop, Adam
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.preprocessing import image
+from tensorflow.keras.callbacks import TensorBoard
 
 #%%
 # Data
@@ -69,18 +71,20 @@ for i, img_path in enumerate(next_cat_pix+next_dog_pix):
 
 #%%
 # Building a model
-model = Sequential(
-                    [
-                        Conv2D(16, (3,3), activation='relu', input_shape=(300,300,3)),
-                        MaxPooling2D(2,2),
-                        Conv2D(32, (3,3), activation='relu'),
-                        MaxPooling2D(2,2),
-                        Conv2D(64, (3,3), activation='relu'),
-                        MaxPooling2D(2,2),
-                        Flatten(),
-                        Dense(512, activation='relu'),
-                        Dense(1, activation='sigmoid')
-                    ]
+model_name = f''
+
+model = Sequential(layers=[
+                            Conv2D(16, (3,3), activation='relu', input_shape=(300,300,3)),
+                            MaxPooling2D(2,2),
+                            Conv2D(32, (3,3), activation='relu'),
+                            MaxPooling2D(2,2),
+                            Conv2D(64, (3,3), activation='relu'),
+                            MaxPooling2D(2,2),
+                            Flatten(),
+                            Dense(512, activation='relu'),
+                            Dense(1, activation='sigmoid')
+                          ],
+                    name=model_name
                     )
 model.compile(loss='binary_crossentropy', optimizer=RMSprop(lr=0.001),
               metrics=['accuracy'])
@@ -107,8 +111,14 @@ train_generator = train_datagen.flow_from_directory('Data/Training/',
 
 #%%
 # Training
+
+log_dir = "logs\\fit\\" + datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = TensorBoard(log_dir, histogram_freq=1, profile_batch=0)
+
+callbacks = [tensorboard_callback]
+
 history = model.fit_generator(train_generator,steps_per_epoch=8,
-                              epochs=15,verbose=1)
+                              epochs=15,verbose=1, callbacks=callbacks)
 
 #%%
 # Prediction
