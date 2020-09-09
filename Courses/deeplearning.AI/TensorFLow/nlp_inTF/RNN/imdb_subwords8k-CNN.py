@@ -21,6 +21,12 @@ from tensorflow.keras.callbacks import TensorBoard
 import matplotlib.pyplot as plt
 %matplotlib qt
 
+from tensorflow.compat.v1 import ConfigProto
+from tensorflow.compat.v1 import InteractiveSession
+physical_devices = tf.config.experimental.list_physical_devices('GPU') 
+for physical_device in physical_devices: 
+    tf.config.experimental.set_memory_growth(physical_device, True)
+
 #%%
 # Data
 dataset, info = tfds.load('imdb_reviews/subwords8k', with_info=True, as_supervised=True)    # 8k specifies the vocab size
