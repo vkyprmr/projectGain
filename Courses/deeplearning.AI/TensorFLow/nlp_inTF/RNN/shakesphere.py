@@ -5,7 +5,7 @@ Created on: 2020-09-10 at 00:48:50
 '''
 '''
 Modified by: vkyprmr
-Last modified on: 2020-09-10 at 10:53:43
+Last modified on: 2020-09-11 at 18:25:57
 '''
 
 #%%
@@ -67,8 +67,8 @@ model = Sequential(layers=[
                             Embedding(vocab_size, embedding_dim),
                             Bidirectional(LSTM(64, return_sequences=True))
                             Dropout(0.2)
-                            Bidirectional(LSTM(32))
-                            Dense(total_words//2, kernel_regularizer=l2(0.01), activation='relu')
+                            Bidirectional(LSTM(32)),
+                            Dense(total_words//2, kernel_regularizer=l2(0.01), activation='relu'),
                             Dense(total_words, activation='softmax')
                             ],
                     name=model_name
