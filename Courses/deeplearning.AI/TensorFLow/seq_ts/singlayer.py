@@ -5,7 +5,7 @@ Created on: 2020-09-10 at 16:07:04
 '''
 '''
 Modified by: vkyprmr
-Last modified on: 2020-09-10 at 16:32:08
+Last modified on: 2020-09-12 at 01:31:25
 '''
 
 #%%
@@ -113,16 +113,19 @@ print(f'Layer weights: {l0.get_weights()}')
 
 #%%
 # Predictions
-forecast = []
-# fig, ax = plt.subplots()
-for time in range(len(series) - window_size):
-    pred = model.predict(series[time:time + window_size][np.newaxis])
-    print(f'Prediction for {time} time-step: {pred}. \nActual: {series[time]}')
-    forecast.append(pred)
-    # ax.plot(time, pred)
+def predict(series):
+    forecast=[]
+    for time in range(len(series) - window_size):
+        pred = model.predict(series[time:time + window_size][np.newaxis])
+        forecast.append(pred)
+        print(f'Epoch: {time}\nActual: {series[time]}\tPredicted: {pred}')
 
-forecast = forecast[split_time-window_size:]
-results = np.array(forecast)[:, 0, 0]
+    forecast = forecast[split_time-window_size:]
+    results = np.array(forecast)[:, 0, 0]
+    return results
+
+results = predict(series)
+
 plot_series(time_train, x_train)
 plot_series(time_valid, x_valid)
 plot_series(time_valid, results)
