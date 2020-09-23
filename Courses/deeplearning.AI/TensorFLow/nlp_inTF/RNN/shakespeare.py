@@ -1,6 +1,6 @@
 '''
 Developer: vkyprmr
-Filename: shakesphere.py
+Filename: shakespeare.py
 Created on: 2020-09-10 at 00:48:50
 '''
 '''
@@ -33,7 +33,7 @@ for physical_device in physical_devices:
 
 #%%
 # Data
-filename = '../Data/Shakesphere/sonnets.txt'
+filename = '../Data/Shakespeare/sonnets.txt'
 data = open(filename).read()
 corpus = data.lower().split("\n")
 
