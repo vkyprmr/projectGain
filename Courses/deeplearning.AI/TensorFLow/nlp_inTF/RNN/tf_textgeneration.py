@@ -1,18 +1,18 @@
-'''
+"""
 Developer: vkyprmr
 Filename: tf_textgeneration.py
 Created on: 2020-09-09 at 23:57:50
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-10 at 00:43:41
-'''
+"""
 
-#%%
+
 # Imports
 import numpy as np
 import matplotlib.pyplot as plt
-%matplotlib qt
+
 from datetime import datetime
 
 import tensorflow as tf
@@ -26,7 +26,7 @@ physical_devices = tf.config.experimental.list_physical_devices('GPU')
 for physical_device in physical_devices: 
     tf.config.experimental.set_memory_growth(physical_device, True)
 
-#%%
+
 # Data
 path_to_file = tf.keras.utils.get_file('shakespeare.txt', 'https://storage.googleapis.com/download.tensorflow.org/data/shakespeare.txt')
 # Read, then decode for py2 compat.
@@ -48,7 +48,7 @@ for char,_ in zip(char2idx, range(20)):
     print(f'  {repr(char):4s}: {char2idx[char]:3d},')
 print('  ...\n}')
 
-#%%
+
 # Preperation for model and predictions
 # The maximum length sentence we want for a single input in characters
 seq_length = 100
@@ -78,7 +78,7 @@ for input_example, target_example in  dataset.take(1):
     print ('Input data: ', repr(''.join(idx2char[input_example.numpy()])))
     print ('Target data:', repr(''.join(idx2char[target_example.numpy()])))
 
-#%%
+
 # Building the model
 # Batch size
 BATCH_SIZE = 64
@@ -116,13 +116,13 @@ model.compile(loss='sparse_categorical_crossentropy',optimizer='adam',metrics=['
 
 model.summary()
 
-#%%
+
 # Checking the shape of the output
 for input_example_batch, target_example_batch in dataset.take(1):
     example_batch_predictions = model(input_example_batch)
     print(example_batch_predictions.shape, "# (batch_size, sequence_length, vocab_size)")
 
-#%%
+
 # Train the model
 epochs = 15
 
@@ -140,7 +140,7 @@ checkpoint_callback=tf.keras.callbacks.ModelCheckpoint(
 
 history = model.fit(dataset, epochs=epochs, callbacks=[checkpoint_callback, tensorboard_callback])
 
-#%%
+
 # Visualizing Accuracy and Loss during training
 def plot_graphs(history, metric):
     plt.plot(history.history[metric])
@@ -153,7 +153,7 @@ def plot_graphs(history, metric):
 plot_graphs('accuracy')
 plot_graph('loss')
 
-#%%
+
 # Predictions
 """ 
     To keep this prediction step simple, use a batch size of 1.
@@ -206,7 +206,7 @@ def generate_text(model, start_string):
 
 print(generate_text(model, start_string=u"ROMEO: "))
 
-#%%
+
 # Customized training
 ### R
 # ead more on: https://www.tensorflow.org/tutorials/text/text_generation

@@ -1,18 +1,18 @@
-'''
+"""
 Developer: vkyprmr
 Filename: singlayer.py
 Created on: 2020-09-10 at 16:07:04
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-12 at 01:31:25
-'''
+"""
 
-#%%
+
 # Imports
 import numpy as np
 import matplotlib.pyplot as plt
-%matplotlib qt
+
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
@@ -25,7 +25,7 @@ physical_devices = tf.config.experimental.list_physical_devices('GPU')
 for physical_device in physical_devices: 
     tf.config.experimental.set_memory_growth(physical_device, True)
 
-#%%
+
 # Data
 def plot_series(time, series, format="-", start=0, end=None, label=None):
     plt.plot(time[start:end], series[start:end], format, label=label)
@@ -82,13 +82,13 @@ x_train = series[:split_time]
 time_valid = time[split_time:]
 x_valid = series[split_time:]
 
-#%%
+
 # Fixed parameters
 window_size = 15
 batch_size = 32
 shuffle_buffer_size = 1000
 
-#%%
+
 # Preparing data (features and labels with TF)
 def windowed_dataset(series, window_size, batch_size, shuffle_buffer):
     dataset = tf.data.Dataset.from_tensor_slices(series)
@@ -100,18 +100,18 @@ def windowed_dataset(series, window_size, batch_size, shuffle_buffer):
 
 dataset = windowed_dataset(x_train, window_size, batch_size, shuffle_buffer_size)
 
-#%%
+
 # Building the model
 l0 = tf.keras.layers.Dense(1, input_shape=[window_size])
 model = tf.keras.models.Sequential([l0])
 model.compile(loss="mse", optimizer=SGD(lr=1e-6, momentum=0.9))
 
-#%%
+
 # Training
 model.fit(dataset,epochs=100,verbose=1)
 print(f'Layer weights: {l0.get_weights()}')
 
-#%%
+
 # Predictions
 def predict(series):
     forecast=[]
@@ -132,4 +132,4 @@ plot_series(time_valid, results)
 
 print(f'MAE: {mean_absolute_error(x_valid, results).numpy()}')
 
-# %%
+

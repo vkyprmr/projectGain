@@ -1,22 +1,22 @@
-'''
+"""
 Developer: vkyprmr
 Filename: syntheticdata.py
 Created on: 2020-09-10 at 13:45:57
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-10 at 14:45:38
-'''
+"""
 
-#%%
+
 # Imports
 import numpy as np
 import matplotlib.pyplot as plt
-%matplotlib qt
+
 from pandas.plotting import autocorrelation_plot
 from statsmodels.tsa.arima_model import ARIMA
 
-#%%
+
 # Data
 def plot_series(time, series, format="-", start=0, end=None, label=None):
     plt.plot(time[start:end], series[start:end], format, label=label)

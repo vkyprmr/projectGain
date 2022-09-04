@@ -1,14 +1,13 @@
-'''
+"""
 Developer: vkyprmr
 Filename: transfer_learning.py
 Created on: 2020-09-07 at 23:21:51
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-09 at 14:52:57
-'''
+"""
 
-#%%
 # Imports
 import os
 from datetime import datetime
@@ -25,9 +24,7 @@ from tensorflow.keras.preprocessing import image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import TensorBoard
 
-%matplotlib qt
 
-#%%
 # Pre-Trained model
 local_weights_file = '/tmp/inception_v3_weights_tf_dim_ordering_tf_kernels_notop.h5'
 
@@ -47,7 +44,7 @@ print('last layer output shape: ', last_layer.output_shape)
 last_output = last_layer.output
  """
 
-#%%
+
 # Callback
 # Define a Callback class that stops training once accuracy reaches 97.0%
 class myCallback(tf.keras.callbacks.Callback):
@@ -56,7 +53,7 @@ class myCallback(tf.keras.callbacks.Callback):
       print("\nReached 97.0% accuracy so cancelling training!")
       self.model.stop_training = True
 
-#%%
+
 # Custom layers
 # Flatten the output layer to 1 dimension
 x = layers.Flatten()(last_output)
@@ -75,7 +72,7 @@ model.compile(optimizer = RMSprop(lr=0.0001),
 
 model.summary()
 
-#%%
+
 # Define our example directories and files
 """ 
     train_dir = '/tmp/training'
@@ -97,7 +94,7 @@ model.summary()
     print(len(validation_humans_fnames))
  """
  
-#%%
+
 # Data Generator
 # Add our data-augmentation parameters to ImageDataGenerator
 train_datagen = ImageDataGenerator(rescale = 1./255.,
@@ -123,7 +120,7 @@ validation_generator =  test_datagen.flow_from_directory(validation_dir,
                                                           class_mode  = 'binary', 
                                                           target_size = (150, 150))
 
-#%%
+
 # Training
 callbacks = myCallback()
 
@@ -139,7 +136,7 @@ history = model.fit_generator(train_generator,
                               validation_steps = 50,
                               verbose = 1)
 
-#%%
+
 # Metrics
 acc = history.history['acc']
 val_acc = history.history['val_acc']

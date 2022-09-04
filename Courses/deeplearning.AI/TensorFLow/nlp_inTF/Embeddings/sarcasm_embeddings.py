@@ -1,20 +1,20 @@
-'''
+"""
 Developer: vkyprmr
 Filename: sarcasm_embeddings.py
 Created on: 2020-09-08 at 22:29:51
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-08 at 23:14:19
-'''
+"""
 
-#%%
+
 # Imports
 import json
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-%matplotlib qt
+
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
@@ -29,7 +29,7 @@ for physical_device in physical_devices:
     tf.config.experimental.set_memory_growth(physical_device, True)
 
 
-#%%
+
 # Data
 # Tokenizing sarcasm data
 with open("Data/Sarcasm/coursera/sarcasm.json", 'r') as f:
@@ -44,7 +44,7 @@ for item in datastore:
     labels.append(item['is_sarcastic'])
     urls.append(item['article_link'])
 
-#%%
+
 # Setting hyperparameters for the embeddings
 vocab_size = 10000
 embedding_dim = 16
@@ -59,7 +59,7 @@ testing_sentences = sentences[training_size:]
 training_labels = labels[0:training_size]
 testing_labels = labels[training_size:]
 
-#%%
+
 # Tokenizing
 tokenizer = Tokenizer(num_words=vocab_size, oov_token=oov_tok)
 tokenizer.fit_on_texts(training_sentences)
@@ -72,14 +72,14 @@ training_padded = pad_sequences(training_sequences, maxlen=max_length, padding=p
 testing_sequences = tokenizer.texts_to_sequences(testing_sentences)
 testing_padded = pad_sequences(testing_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
 
-#%%
+
 # Converting to array
 training_sentences = np.array(training_padded)
 training_labels = np.array(training_labels)
 testing_sentences = np.array(testing_padded)
 testing_labels = np.array(testing_labels)
 
-#%%
+
 # Building the MODEL
 
 model = Sequential(
@@ -93,7 +93,7 @@ model = Sequential(
 model.compile(loss='binary_crossentropy',optimizer=Adam(lr=0.01),metrics=['accuracy'])
 model.summary()
 
-#%%
+
 # Training
 log_dir = "logs\\fit\\" + datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callback = TensorBoard(log_dir, histogram_freq=1, profile_batch=0)
@@ -101,7 +101,7 @@ tensorboard_callback = TensorBoard(log_dir, histogram_freq=1, profile_batch=0)
 epochs = 30
 history = model.fit(training_padded, training_labels, epochs=epochs, validation_data=(testing_padded, testing_labels), verbose=1, callbacks=[tensorboard_callback])
 
-#%%
+
 # Visualizing Accuracy and Loss during training
 def plot_graphs(history, metric):
   plt.plot(history.history[metric])
@@ -113,7 +113,7 @@ def plot_graphs(history, metric):
 plot_graphs(history, "accuracy")
 plot_graphs(history, "loss")
 
-#%%
+
 # Remapping words
 reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
 
@@ -124,7 +124,7 @@ print(decode_sentence(training_padded[0]))
 print(training_sentences[0])
 print(labels[0])
 
-#%%
+
 # Visualization and weights
 e = model.layers[0]
 weights = e.get_weights()[0]
@@ -140,14 +140,14 @@ for word_num in range(1, vocab_size):
 out_v.close()
 out_m.close()
 
-#%%
+
 # Prediction
 sentence = ["granny starting to fear spiders in the garden might be real", "game of thrones season finale showing this sunday night"]
 sequences = tokenizer.texts_to_sequences(sentence)
 padded = pad_sequences(sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
 print(model.predict(padded))
 
-#%%
+
 # Colab Part
 try:
   from google.colab import files

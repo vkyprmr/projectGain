@@ -1,27 +1,27 @@
-'''
+"""
 Developer: vkyprmr
 Filename: trees.py
 Created on: 2020-09-04 at 16:45:27
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-04 at 16:45:28
-'''
+"""
 
-#%%
+
 # Imports
 from loaddata import LoadData
 ld = LoadData()
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
-%matplotlib qt
+
 from sklearn.tree import export_graphviz
 import graphviz
 import numpy as np
 import pandas as pd
 
-#%%
+
 # Breast cancer data
 X, y, fn, tn = ld.load_cancer()
 X_train, X_test, y_train, y_test = train_test_split(
@@ -32,7 +32,7 @@ print(f"Accuracy on training set: {tree.score(X_train, y_train)}")
 print(f"Accuracy on test set: {tree.score(X_test, y_test)}")
 print(f'Features used: {tree.feature_importances_}')
 
-# %%
+
 max_depth = [1,2,3,4,5,6,7,8,9,10]
 train_acc = []
 test_acc = []
@@ -70,14 +70,14 @@ for x, y, z in zip(max_depth, train_acc, test_acc):
                  xytext=(0,-15), # distance from text to points (x,y)
                  ha='center', color='orange')                 
 
-# %%
+
 export_graphviz(tree, out_file="tree.dot", class_names=["malignant", "benign"],
 feature_names=fn, impurity=False, filled=True)
 with open("tree.dot") as f:
     dot_graph = f.read()
 graphviz.Source(dot_graph)
 
-# %%
+
 # Feature Importance
 def plot_feature_importances_cancer(model):
     n_features = X.shape[1]
@@ -88,4 +88,4 @@ def plot_feature_importances_cancer(model):
 
 plot_feature_importances_cancer(tree)
 
-# %%
+

@@ -10,9 +10,9 @@ from sklearn.datasets.samples_generator import make_blobs
 
 
 # Data
-'''
+"""
     Vehicle dataset
-    '''
+    """
 filename = 'cars_clus.csv'
 
 #Read csv

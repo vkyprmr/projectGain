@@ -1,14 +1,14 @@
-'''
+"""
 Developer: vkyprmr
 Filename: sentiment140.py
 Created on: 2020-09-09 at 22:16:56
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-09 at 22:49:06
-'''
+"""
 
-#%%
+
 # Imports
 from __future__ import absolute_import, division, print_function, unicode_literals
 import numpy as np
@@ -24,7 +24,7 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras import regularizers
 from tensorflow.keras.callbacks import TensorBoard
 import matplotlib.pyplot as plt
-%matplotlib qt
+
 
 from tensorflow.compat.v1 import ConfigProto
 from tensorflow.compat.v1 import InteractiveSession
@@ -32,7 +32,7 @@ physical_devices = tf.config.experimental.list_physical_devices('GPU')
 for physical_device in physical_devices: 
     tf.config.experimental.set_memory_growth(physical_device, True)
 
-#%%
+
 # Data
 def read_data(filename):
     df = pd.read_csv(filename, encoding='latin', header=None)
@@ -53,7 +53,7 @@ oov_tok = "<OOV>"
 training_size= 160000
 test_portion=.2
 
-#%%
+
 # Tokenizing words
 tokenizer = Tokenizer()
 tokenizer.fit_on_texts(sentences)
@@ -71,7 +71,7 @@ training_sequences = padded[split:training_size]
 test_labels = np.array(labels[0:split])
 training_labels = np.array(labels[split:training_size])
 
-#%%
+
 # Loading pretrained model weights (embeddings)
 """
     The embeddings used for transfer learning are from the GloVe,
@@ -95,7 +95,7 @@ for word, i in word_index.items():
 
 ### print(len(embeddings_matrix))
 
-#%%
+
 # Building the model
 embedding_dim = 100
 vocab_size = len(embeddings_matrix)+1
@@ -114,7 +114,7 @@ model = Sequential(layers=[
 model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
 model.summary()
 
-#%%
+
 # Training
 epochs = 15
 
@@ -123,7 +123,7 @@ tensorboard_callback = TensorBoard(log_dir, histogram_freq=1, profile_batch=0)
 
 history = model.fit(training_sequences, training_labels, epochs=epochs, validation_data=(test_sequences, test_labels), verbose=1, callbacks=[tensorboard_callback])
 
-#%%
+
 # Visualizing Accuracy and Loss during training
 def plot_graphs(history, metric):
     plt.plot(history.history[metric])

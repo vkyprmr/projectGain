@@ -1,21 +1,20 @@
-'''
+"""
 Developer: vkyprmr
 Filename: cats_vs_dogs.py
 Created on: 2020-09-07 at 17:19:59
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-09 at 14:56:29
-'''
+"""
 
-#%%
 # Imports
 import os
 from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-%matplotlib qt
+
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
@@ -24,7 +23,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.callbacks import TensorBoard
 
-#%%
+
 # Data
 base_dir = 'Data/'
 
@@ -38,7 +37,7 @@ train_dogs_dir = os.path.join(train_dir, 'Dogs')
 train_cat_fnames = os.listdir( train_cats_dir )
 train_dog_fnames = os.listdir( train_dogs_dir )
 
-#%%
+
 # Having a look at the images
 # Parameters for our graph; we'll output images in a 4x4 configuration
 nrows = 4
@@ -46,7 +45,7 @@ ncols = 4
 
 pic_index = 0 # Index for iterating over images
 
-#%%
+
 # Set up matplotlib fig, and size it to fit 4x4 pics
 fig = plt.gcf()
 fig.set_size_inches(ncols*4, nrows*4)
@@ -69,7 +68,7 @@ for i, img_path in enumerate(next_cat_pix+next_dog_pix):
   img = mpimg.imread(img_path)
   plt.imshow(img)
 
-#%%
+
 # Building a model
 model_name = f''
 
@@ -90,7 +89,7 @@ model.compile(loss='binary_crossentropy', optimizer=RMSprop(lr=0.001),
               metrics=['accuracy'])
 model.summary()
 
-#%%
+
 # Building Image Generator
 train_datagen = ImageDataGenerator(rescale=1/255)
 """ 
@@ -109,7 +108,7 @@ train_generator = train_datagen.flow_from_directory('Data/Training/',
                                                     class_mode='binary'
                                                     )
 
-#%%
+
 # Training
 
 log_dir = "logs\\fit\\" + datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -120,7 +119,7 @@ callbacks = [tensorboard_callback]
 history = model.fit_generator(train_generator,steps_per_epoch=8,
                               epochs=15,verbose=1, callbacks=callbacks)
 
-#%%
+
 # Prediction
 path = ''
 
@@ -137,7 +136,7 @@ if classes[0]>0.5:
 else:
     print(fn + " is a Cat")
 
-#%%
+
 # Visualizing Each Convolutional layer
 import numpy as np
 import random

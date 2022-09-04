@@ -1,14 +1,14 @@
-'''
+"""
 Developer: vkyprmr
 Filename: imdb_embeddings_subwords.py
 Created on: 2020-09-08 at 23:16:37
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-09 at 14:49:12
-'''
+"""
 
-#%%
+
 # Imports
 import io
 import numpy as np
@@ -22,7 +22,7 @@ from tensorflow.keras.layers import Dense, Embedding, Flatten, GlobalAveragePool
 from tensorflow.keras.optimizers import RMSprop, Adam
 from tensorflow.keras.callbacks import TensorBoard
 
-#%%
+
 # Set parameters
 """ 
     tf.enable_eager_excecution      # if using tensorflow 1.x
@@ -35,15 +35,15 @@ physical_devices = tf.config.experimental.list_physical_devices('GPU')
 for physical_device in physical_devices: 
     tf.config.experimental.set_memory_growth(physical_device, True)
 
-#%%
+
 # Loading data from TFDS
 imdb, info = tfds.load("imdb_reviews/subwords8k", with_info=True, as_supervised=True)   # 8k specifies vocab size
 
-#%%
+
 # Fetching data from the object
 train_data, test_data = imdb['train'], imdb['test']
 
-# %%
+
 # Tokenizing data
 vocab_size = 10000
 embedding_dim = 16
@@ -62,7 +62,7 @@ print (f'The original string: {original_string}')
 for ts in tokenized_string:
   print ('{} ----> {}'.format(ts, tokenizer.decode([ts])))
 
-#%%
+
 # Hyperparmeters
 BUFFER_SIZE = 10000
 BATCH_SIZE = 64
@@ -71,7 +71,7 @@ train_dataset = train_data.shuffle(BUFFER_SIZE)
 train_dataset = train_dataset.padded_batch(BATCH_SIZE, tf.compat.v1.data.get_output_shapes(train_dataset))
 test_dataset = test_data.padded_batch(BATCH_SIZE, tf.compat.v1.data.get_output_shapes(test_data))
 
-#%%
+
 # Building the model
 embedding_dim = 64
 
@@ -86,7 +86,7 @@ model = Sequential(
 model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
 model.summary()
 
-#%%
+
 # Training
 epochs = 10
 
@@ -97,7 +97,7 @@ callbacks = [tensorboard_callback]
 
 model.fit(train_dataset, epochs=epochs, validation_data=test_dataset)
 
-#%%
+
 # Saving the weights for visualization
 e = model.layers[0]
 weights = e.get_weights()[0]
@@ -113,7 +113,7 @@ for word_num in range(1, vocab_size):
 out_v.close()
 out_m.close()
 
-#%%
+
 # Colab
 try:
   from google.colab import files

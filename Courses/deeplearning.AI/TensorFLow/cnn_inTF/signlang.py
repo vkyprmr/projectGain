@@ -1,14 +1,13 @@
-'''
+"""
 Developer: vkyprmr
 Filename: signlang.py
 Created on: 2020-09-08 at 15:26:01
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-09 at 14:53:47
-'''
+"""
 
-#%%
 # Imports
 import os
 from datetime import datetime
@@ -24,9 +23,7 @@ from tensorflow.keras.preprocessing import image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import TensorBoard
 
-%matplotlib qt
 
-#%%
 # Data
 def read_data(filename):
     """ 
@@ -49,7 +46,7 @@ test_images, test_labels = read_data(test_file)
 print(f'Training input shape: {train_images.shape}, Labels: {train_labels.shape}')
 print(f'Testing input shape: {test_images.shape}, Labels: {test_labels.shape}')
 
-# %%
+
 # Reshaping data to pass to CNN
 train_images = np.expand_dims(train_images, axis=3)
 test_images = np.expand_dims(test_images, axis=3)
@@ -69,7 +66,7 @@ validation_datagen = ImageDataGenerator(rescale = 1./255.)
 validation_generator = validation_datagen.flow(test_images, test_labels,
                                      batch_size = 32)
 
-#%%
+
 # Building the MODEL
 model = Sequential(
                     [
@@ -88,7 +85,7 @@ model.compile(loss='sparse_categorical_crossentropy', optimizer=RMSprop(lr=0.001
               metrics=['accuracy'])
 model.summary()
 
-#%%
+
 # Training
 
 log_dir = "logs\\fit\\" + datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -102,7 +99,7 @@ history = model.fit_generator(train_generator, steps_per_epoch=len(train_images)
 
 model.evaluate(test_images, test_labels, batch_size=32, verbose=1)
 
-#%%
+
 # Metrics
 acc = history.history['acc']
 val_acc = history.history['val_acc']

@@ -1,20 +1,19 @@
-'''
+"""
 Developer: vkyprmr
 Filename: humansvshorse_val.py
 Created on: 2020-09-07 at 15:27:52
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-09 at 14:51:06
-'''
+"""
 
-#%%
 # Imports
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-%matplotlib qt
+
 from datetime import datetime
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
@@ -24,7 +23,6 @@ from tensorflow.keras.preprocessing import image
 from tensorflow.keras.callbacks import TensorBoard
 
 
-#%%
 """ 
     import zipfile
 
@@ -34,7 +32,7 @@ from tensorflow.keras.callbacks import TensorBoard
     zip_ref.close()
  """
 
-#%%
+
 # Data
 # Directory with our training pictures
 train_horse_dir = os.path.join('Data/Training/horses')
@@ -56,7 +54,7 @@ ncols = 4
 # Index for iterating over images
 pic_index = 0
 
-#%%
+
 # Set up matplotlib fig, and size it to fit 4x4 pics
 fig = plt.gcf()
 fig.set_size_inches(ncols * 4, nrows * 4)
@@ -77,7 +75,7 @@ for i, img_path in enumerate(next_horse_pix+next_human_pix):
 
 plt.show()
 
-# %%
+
 # Building a model
 model = Sequential(
                     [
@@ -96,7 +94,7 @@ model.compile(loss='binary_crossentropy', optimizer=RMSprop(lr=0.001),
               metrics=['accuracy'])
 model.summary()
 
-#%%
+
 # Building Image Generator
 train_datagen = ImageDataGenerator(rescale=1/255)
 """ 
@@ -131,7 +129,7 @@ val_generator = val_datagen.flow_from_directory('Data/Validation/',
                                                     class_mode='binary'
                                                     )
 
-#%%
+
 # Training
 log_dir = "logs\\fit\\" + datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callback = TensorBoard(log_dir, histogram_freq=1, profile_batch=0)
@@ -142,7 +140,7 @@ history = model.fit_generator(train_generator, steps_per_epoch=8,
                               validation_data=val_generator, validation_steps=8,
                               epochs=15, verbose=1, callbacks=callbacks)
 
-#%%
+
 # Prediction
 path = ''
 
@@ -160,7 +158,7 @@ else:
     print(fn + " is a horse")
 
 
-#%%
+
 # Visualization of each Conv. layer
 import random
 from tensorflow.keras.preprocessing.image import img_to_array, load_img

@@ -1,14 +1,14 @@
-'''
+"""
 Developer: vkyprmr
 Filename: prediction.py
 Created on: 2020-09-09 at 23:24:01
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-09 at 23:38:28
-'''
+"""
 
-#%%
+
 import tensorflow as tf
 
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -19,7 +19,7 @@ from tensorflow.keras.optimizers import Adam
 import numpy as np
 from datetime import datetime
 import matplotlib.pyplot as plt
-%matplotlib qt
+
 
 from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.compat.v1 import ConfigProto
@@ -28,7 +28,7 @@ physical_devices = tf.config.experimental.list_physical_devices('GPU')
 for physical_device in physical_devices: 
     tf.config.experimental.set_memory_growth(physical_device, True)
 
-#%%
+
 # Data and tokenizing
 tokenizer = Tokenizer()
 
@@ -42,7 +42,7 @@ total_words = len(tokenizer.word_index) + 1
 print(tokenizer.word_index)
 print(total_words)
 
-#%%
+
 # Preparing data for the model
 input_sequences = []
 for line in corpus:
@@ -60,7 +60,7 @@ xs, labels = input_sequences[:,:-1],input_sequences[:,-1]
 
 ys = tf.keras.utils.to_categorical(labels, num_classes=total_words)
 
-#%%
+
 # Building the model
 embedding_dim = 64
 vocab_size = total_words
@@ -77,7 +77,7 @@ model = Sequential(layers=[
 model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
 model.summary()
 
-#%%
+
 # Training
 epochs = 15
 
@@ -86,7 +86,7 @@ tensorboard_callback = TensorBoard(log_dir, histogram_freq=1, profile_batch=0)
 
 history = model.fit(xs,ys, epochs=epochs, verbose=1, callbacks=[tensorboard_callback])
 
-#%%
+
 # Visualizing Accuracy and Loss during training
 def plot_graphs(history, metric):
     plt.plot(history.history[metric])
@@ -99,7 +99,7 @@ def plot_graphs(history, metric):
 plot_graphs('accuracy')
 plot_graph('loss')
 
-#%%
+
 # Prediction
 seed_text = "Laurence went to dublin"
 next_words = 100

@@ -1,14 +1,14 @@
-'''
+"""
 Developer: vkyprmr
 Filename: shakespeare.py
 Created on: 2020-09-10 at 00:48:50
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-11 at 18:25:57
-'''
+"""
 
-#%%
+
 # Imports
 import tensorflow as tf
 
@@ -22,7 +22,7 @@ from tensorflow.keras.regularizers import l2
 import numpy as np 
 from datetime import datetime
 import matplotlib.pyplot as plt
-%matplotlib qt
+
 
 from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.compat.v1 import ConfigProto
@@ -31,7 +31,7 @@ physical_devices = tf.config.experimental.list_physical_devices('GPU')
 for physical_device in physical_devices: 
     tf.config.experimental.set_memory_growth(physical_device, True)
 
-#%%
+
 # Data
 filename = '../Data/Shakespeare/sonnets.txt'
 data = open(filename).read()
@@ -56,7 +56,7 @@ input_sequences = np.array(pad_sequences(input_sequences, maxlen=max_sequence_le
 predictors, label = input_sequences[:,:-1],input_sequences[:,-1]
 label = ku.to_categorical(label, num_classes=total_words)
 
-#%%
+
 # Building the model
 embedding_dim = 64
 vocab_size = total_words
@@ -77,7 +77,7 @@ optimizer = Adam(lr=0.001)
 model.compile(loss='categorical_crossentropy',optimizer=optimizer,metrics=['accuracy'])
 model.summary()
 
-#%%
+
 # Training
 epochs = 15
 
@@ -86,7 +86,7 @@ tensorboard_callback = TensorBoard(log_dir, histogram_freq=1, profile_batch=0)
 
 history = model.fit(predictors, label, epochs=epochs, verbose=1, callbacks=[tensorboard_callback])
 
-#%%
+
 # Visualizing Accuracy and Loss during training
 def plot_graphs(history, metric):
     plt.plot(history.history[metric])

@@ -16,10 +16,10 @@ class Xyz:
         pass
 
 
-'''
+"""
     if we assign one instance method to some variable, we can later
     call other instance methods on that particular variable.
-'''
+"""
 
 
 class Abc(Xyz):

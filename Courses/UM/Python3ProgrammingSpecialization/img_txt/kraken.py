@@ -68,11 +68,11 @@ print(bounding_boxes)
 # clearly. I'm going to clean up my act a bit and write real documentation too, it's a good
 # practice
 def show_boxes(img):
-    '''Modifies the passed image to show a series of bounding boxes on an image as run by kraken
+    """Modifies the passed image to show a series of bounding boxes on an image as run by kraken
     
     :param img: A PIL.Image object
     :return img: The modified PIL.Image object
-    '''
+    """
     # Lets bring in our ImageDraw object
     from PIL import ImageDraw
     # And grab a drawing object to annotate that image
@@ -120,11 +120,11 @@ display(show_boxes(Image.open("readonly/two_col.png")))
 # The first step is that I want to update the show_boxes() function. I'm just going to do a quick
 # copy and paste from the above but add in the black_colseps=True parameter
 def show_boxes(img):
-    '''Modifies the passed image to show a series of bounding boxes on an image as run by kraken
+    """Modifies the passed image to show a series of bounding boxes on an image as run by kraken
     
     :param img: A PIL.Image object
     :return img: The modified PIL.Image object
-    '''
+    """
     # Lets bring in our ImageDraw object
     from PIL import ImageDraw
     # And grab a drawing object to annotate that image
@@ -150,10 +150,10 @@ char_width=25
 # The height is harder, since it depends on the height of the text. I'm going to write a routine
 # to calculate the average height of a line
 def calculate_line_height(img):
-    '''Calculates the average height of a line from a given image
+    """Calculates the average height of a line from a given image
     :param img: A PIL.Image object
     :return: The average line height in pixels
-    '''
+    """
     # Lets get a list of bounding boxes for this image
     bounding_boxes=pageseg.segment(img.convert('1'))['boxes']
     # Each box is a tuple of (top, left, bottom, right) so the height is just top - bottom
@@ -195,12 +195,12 @@ gap_box
 #
 # Lets call this new function gap_check
 def gap_check(img, location):
-    '''Checks the img in a given (x,y) location to see if it fits the description
+    """Checks the img in a given (x,y) location to see if it fits the description
     of a gap_box
     :param img: A PIL.Image file
     :param location: A tuple (x,y) which is a pixel location in that image
     :return: True if that fits the definition of a gap_box, otherwise False
-    '''
+    """
     # Recall that we can get a pixel using the img.getpixel() function. It returns this value
     # as a tuple of integers, one for each color channel. Our tools all work with binarized
     # images (black and white), so we should just get one value. If the value is 0 it's a black
@@ -230,12 +230,12 @@ def gap_check(img, location):
 # Alright, we have a function to check for a gap, called gap_check. What should we do once
 # we find a gap? For this, lets just draw a line in the middle of it. Lets create a new function
 def draw_sep(img,location):
-    '''Draws a line in img in the middle of the gap discovered at location. Note that
+    """Draws a line in img in the middle of the gap discovered at location. Note that
     this doesn't draw the line in location, but draws it at the middle of a gap_box
     starting at location.
     :param img: A PIL.Image file
     :param location: A tuple(x,y) which is a pixel location in the image
-    '''
+    """
     # First lets bring in all of our drawing code
     from PIL import ImageDraw
     drawing_object=ImageDraw.Draw(img)
@@ -257,10 +257,10 @@ def draw_sep(img,location):
 # Now, lets try it all out. This is pretty easy, we can just iterate through each pixel 
 # in the image, check if there is a gap, then insert a line if there is.
 def process_image(img):
-    '''Takes in an image of text and adds black vertical bars to break up columns
+    """Takes in an image of text and adds black vertical bars to break up columns
     :param img: A PIL.Image file
     :return: A modified PIL.Image file
-    '''
+    """
     # we'll start with a familiar iteration process
     for x in range(img.width):
         for y in range(img.height):

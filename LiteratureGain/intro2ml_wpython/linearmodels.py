@@ -1,18 +1,18 @@
-'''
+"""
 Developer: vkyprmr
 Filename: linearmodels.py
 Created on: 2020-09-03 at 18:52:22
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-04 at 16:45:56
-'''
+"""
 
-#%%
+
 # Imports
 from loaddata import LoadData
 import matplotlib.pyplot as plt
-%matplotlib qt
+
 import mglearn
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet, LogisticRegression
@@ -21,11 +21,11 @@ from sklearn.datasets import make_blobs
 import numpy as np
 import pandas as pd
 
-#%%
+
 # Loading data
 ld = LoadData()
 
-#%%
+
 # Linear model for wave data
 X, y = ld.load_wave(n_samples=60)
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
@@ -33,7 +33,7 @@ lr = LinearRegression().fit(X_train, y_train)
 print(f'Train score: {lr.score(X_train,y_train)}')
 print(f'Test score: {lr.score(X_test,y_test)}')
 
-# %%
+
 # Linear model on Boston Housing data
 X, y = ld.load_boston()
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
@@ -41,7 +41,7 @@ lr = LinearRegression().fit(X_train, y_train)
 print(f'Train score: {lr.score(X_train,y_train)}')
 print(f'Test score: {lr.score(X_test,y_test)}')
 
-# %%
+
 # Ridge (uses L2 regularization) model on Boston Housing data
 X, y = ld.load_boston()
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
@@ -65,7 +65,7 @@ plt.plot(alpha, train_acc, label='Train')
 plt.plot(alpha, test_acc, label='Test')
 plt.legend()
 
-# %%
+
 # Lasso (uses L1 regularization) model on Boston Housing data
 X, y = ld.load_boston()
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
@@ -90,7 +90,7 @@ plt.plot(alpha, train_acc, label='Train')
 plt.plot(alpha, test_acc, label='Test')
 plt.legend()
 
-# %%
+
 # Combination of Ridge and Lasso --> Elastic net
 # Lasso (uses L1 regularization) model on Boston Housing data
 X, y = ld.load_boston()
@@ -115,13 +115,13 @@ for r in ratio:
         score_tracker = pd.concat([score_tracker, temp_df], axis=0)
 
     
-#%%
+
 # Plots
 plt.plot(alpha, train_acc[-100:], label='Train')
 plt.plot(alpha, test_acc[-100:], label='Test')
 plt.legend()
 
-# %%
+
 fig, axes = plt.subplots(2,5, sharex=True, sharey=True)
 i=0
 for ax in (axes.flatten()):
@@ -135,11 +135,11 @@ for ax in (axes.flatten()):
     ax.legend()
     i+=100
 
-# %%
+
 # Applying logistic regression on Forge data
-'''
+"""
     Despite the name, Logistic regression is used for classification.
-'''
+"""
 X, y = ld.load_forge()
 fig, axes = plt.subplots(1, 2, figsize=(10, 3))
 for model, ax in zip([LinearSVC(), LogisticRegression()], axes):
@@ -152,7 +152,7 @@ for model, ax in zip([LinearSVC(), LogisticRegression()], axes):
     ax.set_ylabel("Feature 1")
 axes[0].legend()
 
-#%%
+
 # Applying logreg to breast cancer
 X, y, fn, tn = ld.load_cancer()
 X_train, X_test, y_train, y_test = train_test_split(
@@ -161,7 +161,7 @@ logreg = LogisticRegression().fit(X_train, y_train)
 print(f'Train score: {logreg.score(X_train, y_train)}')
 print(f'Test score: {logreg.score(X_test, y_test)}')
 
-# %%
+
 ## Trying different values of C
 C = np.arange(1,100,1).tolist()
 train_score = []
@@ -181,7 +181,7 @@ plt.xlabel('C')
 plt.ylabel('Score')
 plt.legend()
 
-# %%
+
 # Making blobs and building a classifier
 X, y = make_blobs(random_state=42)
 mglearn.discrete_scatter(X[:, 0], X[:, 1], y)
@@ -213,7 +213,7 @@ plt.legend(['Class 0', 'Class 1', 'Class 2', 'Line class 0', 'Line class 1',
 plt.xlabel("Feature 0")
 plt.ylabel("Feature 1")
 
-# %%
-'''
+
+"""
     The main parameter of linear models is the regularization parameter, called alpha inthe regression models and C in LinearSVC and LogisticRegression. Large values foralpha or small values for C mean simple models. In particular for the regression models,tuning these parameters is quite important. Usually C and alpha are searched foron a logarithmic scale. The other decision you have to make is whether you want touse L1 regularization or L2 regularization. If you assume that only a few of your featuresare actually important, you should use L1. Otherwise, you should default to L2.L1 can also be useful if interpretability of the model is important. As L1 will use onlya few features, it is easier to explain which features are important to the model, andwhat the effects of these features are.
-'''
+"""

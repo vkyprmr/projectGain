@@ -1,18 +1,18 @@
-'''
+"""
 Developer: vkyprmr
 Filename: dnn_setLR.py
 Created on: 2020-09-11 at 17:37:54
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-11 at 17:53:00
-'''
+"""
 
-#%%
+
 # Imports
 import numpy as np
 import matplotlib.pyplot as plt
-%matplotlib qt
+
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
@@ -26,7 +26,7 @@ physical_devices = tf.config.experimental.list_physical_devices('GPU')
 for physical_device in physical_devices:
     tf.config.experimental.set_memory_growth(physical_device, True)
 
-#%%
+
 # Data
 def plot_series(time, series, format="-", start=0, end=None):
     plt.plot(time[start:end], series[start:end], format)
@@ -75,7 +75,7 @@ window_size = 20
 batch_size = 32
 shuffle_buffer_size = 1000
 
-#%%
+
 # Preaparing Data
 def windowed_dataset(series, window_size, batch_size, shuffle_buffer):
     dataset = tf.data.Dataset.from_tensor_slices(series)
@@ -87,7 +87,7 @@ def windowed_dataset(series, window_size, batch_size, shuffle_buffer):
 
 dataset = windowed_dataset(x_train, window_size, batch_size, shuffle_buffer_size)
 
-#%%
+
 # Building the Model
 model_name = f'seq_dnn-1010'
 
@@ -102,7 +102,7 @@ optimizer = SGD(lr=1e-7, momentum=0.9)
 model.compile(loss='mse',optimizer=optimizer)
 model.summary()
 
-#%%
+
 # Training
 epochs = 15
 
@@ -111,7 +111,7 @@ tensorboard_callback = TensorBoard(log_dir, histogram_freq=1, profile_batch=0)
 
 history = model.fit(dataset, epochs=epochs, verbose=1, callbacks=[tensorboard_callback])
 
-#%%
+
 # Loss visualization
 plt.plot(history.history['loss'], label='train')
 plt.legend()
@@ -119,7 +119,7 @@ plt.title('Loss vs Epochs')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
 
-#%%
+
 # Predictions
 forecast = []
 for time in range(len(series) - window_size):
@@ -133,7 +133,7 @@ plot_series(time_valid, results)
 mae = mean_absolute_error(x_valid, results).numpy()
 print(f'MAE: {mae}')
 
-#%%
+
 # Learning Rate Scheduler
 dataset = windowed_dataset(x_train, window_size, batch_size, shuffle_buffer_size)
 
@@ -150,17 +150,17 @@ model = Sequential(layers=[
 optimizer = SGD(lr=1e-8, momentum=0.9)
 model.compile(loss="mse", optimizer=optimizer)
 
-#%%
+
 # Training
 epochs = 100
 lr_schedule = LearningRateScheduler(lambda epoch: 1e-8 * 10**(epoch / 20))
 history_lrs = model.fit(dataset, epochs=epochs, callbacks=[lr_schedule, tensorboard_callback], verbose=1)
 
-#%%
+
 # Visualizing Learning Rates
 lrs = 1e-8 * (10 ** (np.arange(100) / 20))
 plt.semilogx(lrs, history_lrs.history["loss"])
 plt.axis([1e-8, 1e-3, 0, 300])
 
-#%%
+
 # Repeat with the minimum learning rate

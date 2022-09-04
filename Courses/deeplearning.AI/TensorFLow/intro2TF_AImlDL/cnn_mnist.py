@@ -1,18 +1,17 @@
-'''
+"""
 Developer: vkyprmr
 Filename: cnn_mnist.py
 Created on: 2020-09-04 at 21:26:57
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-09 at 14:51:36
-'''
+"""
 
-#%%
 # Import
 import numpy as np
 import matplotlib.pyplot as plt
-%matplotlib qt
+
 from datetime import datetime
 import tensorflow as tf
 from tensorflow.keras import models
@@ -21,13 +20,13 @@ from tensorflow.keras.layers import Flatten, Dense, Conv2D, MaxPooling2D
 from tensorflow.keras import datasets
 from tensorflow.keras.callbacks import TensorBoard
 
-#%%
+
 # Loading and Preparing data
 (X_train, y_train), (X_test, y_test) = datasets.fashion_mnist.load_data()
 plt.imshow(X_train[0])
 X_train, X_test = X_train/255.0, X_test/255.0
 
-# %%
+
 # Defining basic model
 ###
 ##### Defining own callbacks
@@ -65,7 +64,7 @@ callbacks = [callbacks, tensorboard_callback]
 
 model.fit(X_train.reshape(batch_size, width, height, channels), y_train, epochs=10, callbacks=[callbacks])
 
-#%%
+
 # Check what each layer is doing
 f, axarr = plt.subplots(3,4)
 FIRST_IMAGE=0

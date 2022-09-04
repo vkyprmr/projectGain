@@ -1,22 +1,22 @@
-'''
+"""
 Developer: vkyprmr
 Filename: syntheticpred.py
 Created on: 2020-09-10 at 14:45:26
-'''
-'''
+"""
+"""
 Modified by: vkyprmr
 Last modified on: 2020-09-10 at 15:35:27
-'''
+"""
 
-#%%
+
 # Imports
 import numpy as np
 import matplotlib.pyplot as plt
-%matplotlib qt
+
 from pandas.plotting import autocorrelation_plot
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
-#%%
+
 # Data (synthetic)
 def plot_series(time, series, format="-", start=0, end=None):
     plt.plot(time[start:end], series[start:end], format)
@@ -57,7 +57,7 @@ series += noise(time, noise_level, seed=42)
 
 plot_series(time, series)
 
-#%%
+
 # Splitting data and visualizing
 split_time = 1000
 time_train = time[:split_time]
@@ -70,7 +70,7 @@ plt.show()
 
 plot_series(time_valid, x_valid)
 
-#%%
+
 # Naive Forecast
 naive_forecast = series[split_time - 1:-1]
 
